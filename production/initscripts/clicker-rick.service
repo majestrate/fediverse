@@ -1,0 +1,14 @@
+[Unit]
+Description=ClickerRick - The final software solution of the fediverse
+After=network.target
+Requires=postgresql.service
+
+[Service]
+User=fediverse
+Type=simple
+ExecStart=/usr/local/bin/clicker-rick /usr/local/etc/clicker-rick.ini
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

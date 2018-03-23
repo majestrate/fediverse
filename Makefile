@@ -5,6 +5,10 @@ RM = rm -rf
 BUILD_DIR=$(REPO)/build
 REPO_GOPATH=$(BUILD_DIR)/go
 
+PREFIX ?= /usr/local
+
+ASSETS_DIR=$(REPO)/assets
+
 GOROOT ?= $(shell go env GOROOT)
 GO = $(GOROOT)/bin/go
 # desired go version 
@@ -16,7 +20,7 @@ RICKD = $(REPO_GOPATH)/bin/clicker-rick
 
 CONFIG_ROOT ?= $(REPO)/etc
 
-CONFIG = $(CONFIG_ROOT)/server.ini
+CONFIG = $(CONFIG_ROOT)/clicker-rick.ini
 
 _NOT_SET = not-set
 
@@ -30,7 +34,7 @@ GENCONF_SRC = $(SERVER)/cmd/fediverse-genconf
 
 GENCONF = $(REPO_GOPATH)/bin/fediverse-genconf
 
-all: clean build
+all: build
 
 $(CONFIG_ROOT):
 	mkdir $(CONFIG_ROOT)
@@ -39,7 +43,7 @@ $(GENCONF):
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -v $(GENCONF_SRC)
 
 $(CONFIG): ensure-params $(CONFIG_ROOT) $(GENCONF)
-	$(GENCONF) "$(EMAIL)" "$(DOMAIN)" "$(CONFIG)"
+	$(GENCONF) "$(EMAIL)" "$(DOMAIN)" "$(ASSETS_DIR)" "$(CONFIG)"
 
 update:
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -d -v $(SERVER)
@@ -77,4 +81,7 @@ clean:
 distclean:
 	$(GIT) clean -xdf
 
+install:
+	install $(RICKD) $(PREFIX)/bin
+	install $(CONFIG) $(PREFIX)/etc
 
