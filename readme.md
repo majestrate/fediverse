@@ -11,7 +11,7 @@
 
 Build the server, assets and generate configs, only run this once:
 
-    $ make configure EMAIL='your-admin@email-address' DOMAIN='your-domain-goes-here.tld'
+    $ make build configure EMAIL='your-admin@email-address' DOMAIN='your-domain-goes-here.tld'
 
 To run the server in forground:
 

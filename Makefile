@@ -39,18 +39,18 @@ all: build
 $(CONFIG_ROOT):
 	mkdir $(CONFIG_ROOT)
 
-$(GENCONF):
+$(GENCONF): 
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -v $(GENCONF_SRC)
 
-$(CONFIG): ensure-params $(CONFIG_ROOT) $(GENCONF)
+$(CONFIG): $(CONFIG_ROOT) $(GENCONF)
 	$(GENCONF) "$(EMAIL)" "$(DOMAIN)" "$(ASSETS_DIR)" "$(CONFIG)"
 
 update:
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -d -v $(SERVER)
 
-build: $(RICKD)
+build: update $(RICKD)
 
-$(RICKD): update
+$(RICKD):
 	GOPATH=$(REPO_GOPATH) $(GO) install $(SERVER)
 
 ensure: ensure-params ensure-go ensure-git
@@ -72,8 +72,8 @@ ensure-go:
 
 configure: ensure $(CONFIG)
 
-run: $(RICKD) $(CONFIG)
-	$(RICKD) "$(CONFIG)"
+run:
+	GIN_MODE=release $(RICKD) "$(CONFIG)"
 
 clean:
 	$(RM) $(BUILD_DIR)
