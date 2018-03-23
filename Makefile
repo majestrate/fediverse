@@ -1,5 +1,7 @@
 REPO := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+RM = rm -rf
+
 BUILD_DIR=$(REPO)/build
 REPO_GOPATH=$(BUILD_DIR)/go
 
@@ -10,7 +12,7 @@ GO_VERSION ?= go1.10
 
 GIT ?= $(shell which git)
 
-RICKD = $(GOPATH)/bin/clicker-rick
+RICKD = $(REPO_GOPATH)/bin/clicker-rick
 
 CONFIG_ROOT ?= $(REPO)/etc
 
@@ -28,8 +30,7 @@ GENCONF_SRC = $(SERVER)/cmd/fediverse-genconf
 
 GENCONF = $(REPO_GOPATH)/bin/fediverse-genconf
 
-
-initial: ensure-config
+all: clean build
 
 $(CONFIG_ROOT):
 	mkdir $(CONFIG_ROOT)
@@ -37,13 +38,15 @@ $(CONFIG_ROOT):
 $(GENCONF):
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -v $(GENCONF_SRC)
 
-$(CONFIG): $(CONFIG_ROOT) $(GENCONF)
+$(CONFIG): ensure-params $(CONFIG_ROOT) $(GENCONF)
 	$(GENCONF) "$(EMAIL)" "$(DOMAIN)" "$(CONFIG)"
 
 update:
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -d -v $(SERVER)
 
-$(RICKD): ensure-go
+build: $(RICKD)
+
+$(RICKD): update
 	GOPATH=$(REPO_GOPATH) $(GO) install $(SERVER)
 
 ensure: ensure-params ensure-go ensure-git
@@ -63,10 +66,15 @@ ensure-go:
 	test -x $(GO)
 	test $(shell $(GO) version | cut -d' ' -f3) = $(GO_VERSION)
 
-ensure-config: $(CONFIG)
+configure: ensure $(CONFIG)
 
-run: ensure-config
+run: $(RICKD) $(CONFIG)
 	$(RICKD) "$(CONFIG)"
 
+clean:
+	$(RM) $(BUILD_DIR)
+
+distclean:
+	$(GIT) clean -xdf
 
 
