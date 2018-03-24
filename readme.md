@@ -1,5 +1,7 @@
 # Fediverse
 
+**this project does not do anything interesting come back later**
+
 Fediverse entrypoint repository.
 
 If you want to run [clicker-rick](https://github.com/majestrate/clicker-rick) this is the right place to start.
