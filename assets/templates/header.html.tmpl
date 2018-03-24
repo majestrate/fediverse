@@ -1,0 +1,14 @@
+{{ define "header.html" }}
+<!doctype html>
+<html lang=en>
+  <head>
+    <title> {{ .SiteName }} </title>
+    <link rel="stylesheet" href="/static/site.css" />
+    {{ template "header_scripts" . }}
+    {{ template "header_meta" . }}
+    {{ if .OpenGraph }}
+    {{ template "header_opengraph" .OpenGraph }}
+    {{ end }}
+  </head>
+  <body>
+{{ end }}

@@ -1,4 +1,8 @@
-# fediverse
+# Fediverse
+
+Fediverse entrypoint repository.
+
+If you want to run [clicker-rick](https://github.com/majestrate/clicker-rick) this is the right place to start.
 
 
 ## dependencies
@@ -16,5 +20,11 @@ Build the server, assets and generate configs, only run this once:
 To run the server in forground:
 
     $ make run
+
+## workflow
+
+To update the server source and rebuild run:
+
+    $ make refresh
 
 See `production/initscripts` for production level init scripts

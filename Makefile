@@ -48,6 +48,10 @@ $(CONFIG): $(CONFIG_ROOT) $(GENCONF)
 update:
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -d -v $(SERVER)
 
+refresh: clean
+	$(MAKE) -C $(REPO_GOPATH)/src/$(SERVER) update
+	GOPATH=$(REPO_GOPATH) $(GO) install $(SERVER)
+
 build: update $(RICKD)
 
 $(RICKD):
@@ -76,7 +80,7 @@ run:
 	GIN_MODE=release $(RICKD) "$(CONFIG)"
 
 clean:
-	$(RM) $(BUILD_DIR)
+	$(RM) $(RICKD)
 
 distclean:
 	$(GIT) clean -xdf

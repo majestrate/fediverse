@@ -1,0 +1,5 @@
+/** init.js */
+
+function ready()
+{
+};
