@@ -15,18 +15,22 @@ If you want to run [clicker-rick](https://github.com/majestrate/clicker-rick) th
 
 ## setup process
 
-Build the server, assets and generate configs, only run this once:
+Build the server, assets and generate configs, and run the server in the forground on `0.0.0.0:3000`
 
-    $ make build configure EMAIL='your-admin@email-address' DOMAIN='your-domain-goes-here.tld'
+    $ make sandwich EMAIL='your-admin@email-address' DOMAIN='your-domain-goes-here.tld'
 
-To run the server in forground:
-
-    $ make run
+See `production/initscripts` for production level init scripts
 
 ## workflow
 
 To update the server source and rebuild run:
 
     $ make refresh
+    
+To rebuild to frontend js run:
 
-See `production/initscripts` for production level init scripts
+    $ make bloat
+    
+To reset *literally* everything run:
+
+    $ make distclean

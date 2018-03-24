@@ -28,7 +28,7 @@ TSC_MAIN = $(TSC_SRC)/main.ts
 
 APPJS = $(STATIC)/app.min.js
 
-RICKD = $(REPO_GOPATH)/bin/clicker-rick
+RICKD = $(BUILD_DIR)/clicker-rick
 
 CONFIG_ROOT ?= $(REPO)/etc
 
@@ -46,7 +46,22 @@ GENCONF_SRC = $(SERVER)/cmd/fediverse-genconf
 
 GENCONF = $(REPO_GOPATH)/bin/fediverse-genconf
 
-all: refresh bloat
+all: help
+
+help:
+	@echo "usage: make [target]"
+	@echo ""
+	@echo "current (useful) targets:"
+	@echo ""
+	@echo "build     :build server source"
+	@echo "bloat     :rebuild frontend js"
+	@echo "configure :generate initial configs"
+	@echo "refresh   :refresh server source and rebuild server"
+	@echo "sandwich  :the equiv of make build configure run"
+	@echo ""
+	@echo "make sure to review readme.md"
+	@echo ""
+
 
 $(BLOAT):
 	$(YARN) install
@@ -72,14 +87,15 @@ $(CONFIG): $(CONFIG_ROOT) $(GENCONF)
 update:
 	GOPATH=$(REPO_GOPATH) $(GO) get -u -d -v $(SERVER)
 
-refresh: clean
+refresh:
+	$(RM) $(RICKD)
 	$(MAKE) -C $(REPO_GOPATH)/src/$(SERVER) update
-	GOPATH=$(REPO_GOPATH) $(GO) install $(SERVER)
+	GOPATH=$(REPO_GOPATH) $(GO) build -a -o $(RICKD) $(SERVER)
 
-build: update $(RICKD)
+build: update $(RICKD) bloat
 
 $(RICKD):
-	GOPATH=$(REPO_GOPATH) $(GO) install $(SERVER)
+	GOPATH=$(REPO_GOPATH) $(GO) build -a -o $(RICKD) $(SERVER)
 
 ensure: ensure-params ensure-go ensure-git
 
@@ -87,6 +103,7 @@ ensure-params: check-email-set check-domain-set
 
 check-email-set:
 	test "email=$(EMAIL)" != "email=$(_NOT_SET)"
+
 check-domain-set:
 	test "domain=$(DOMAIN)" != "domain=$(_NOT_SET)"
 
@@ -98,6 +115,28 @@ ensure-go:
 	test -x $(GO)
 	test $(shell $(GO) version | cut -d' ' -f3) = $(GO_VERSION)
 
+
+sandwich: ensure build configure
+	@echo "your sandwich is ready"
+	@echo "                          ____"
+	@echo "              .----------'    '-."
+	@echo "             /  .      '     .   \\"
+	@echo "            /        ' woah      /|"
+	@echo "           /     nice            \\"
+	@echo "          /  ' .       .     .  | \\"
+	@echo "         /.___________    '    / /"
+	@echo "         |._          '------'| / \\"
+	@echo "         '.............______.-' /"
+	@echo "         |-.                  | /"
+	@echo "         \`------------.....---+'"
+	@echo ""
+	GIN_MODE=release $(RICKD) "$(CONFIG)"
+
+reconfigure: ensure unconfigure configure
+
+unconfigure:
+	$(RM) $(CONFIG)
+
 configure: ensure $(CONFIG)
 
 run:
@@ -107,6 +146,7 @@ clean: debloat
 	$(RM) $(RICKD)
 
 distclean:
+	$(RM) $(BUILD_DIR)
 	$(GIT) clean -xdf
 
 install:
