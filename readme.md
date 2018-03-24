@@ -12,6 +12,7 @@ If you want to run [clicker-rick](https://github.com/majestrate/clicker-rick) th
 * git
 * GNU Make
 * go 1.10 or higher
+* yarn
 
 ## setup process
 
