@@ -1,1 +1,12 @@
 /** site.css global theme */
+
+
+body {
+    background-image: url("/static/img/picklerick.jpeg");
+    background-size: cover;
+}
+
+footer {
+    position: absolute;
+    bottom: 10px;
+}

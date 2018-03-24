@@ -9,12 +9,24 @@ PREFIX ?= /usr/local
 
 ASSETS_DIR=$(REPO)/assets
 
+STATIC=$(ASSETS_DIR)/static
+
 GOROOT ?= $(shell go env GOROOT)
 GO = $(GOROOT)/bin/go
 # desired go version 
 GO_VERSION ?= go1.10
 
 GIT ?= $(shell which git)
+
+YARN ?= $(shell which yarn)
+
+BLOAT = $(REPO)/node_modules
+
+TSC = $(BLOAT)/.bin/tsc
+TSC_SRC = $(REPO)/frontend/ts
+TSC_MAIN = $(TSC_SRC)/main.ts
+
+APPJS = $(STATIC)/app.min.js
 
 RICKD = $(REPO_GOPATH)/bin/clicker-rick
 
@@ -34,7 +46,19 @@ GENCONF_SRC = $(SERVER)/cmd/fediverse-genconf
 
 GENCONF = $(REPO_GOPATH)/bin/fediverse-genconf
 
-all: build
+all: refresh bloat
+
+$(BLOAT):
+	$(YARN) install
+
+debloat:
+	$(RM) $(BLOAT)
+	$(RM) $(APPJS)
+
+bloat: $(BLOAT) $(APPJS)
+
+$(APPJS):
+	$(TSC) $(TSC_MAIN) --outfile $(APPJS)
 
 $(CONFIG_ROOT):
 	mkdir $(CONFIG_ROOT)
@@ -79,7 +103,7 @@ configure: ensure $(CONFIG)
 run:
 	GIN_MODE=release $(RICKD) "$(CONFIG)"
 
-clean:
+clean: debloat
 	$(RM) $(RICKD)
 
 distclean:

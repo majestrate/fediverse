@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true,
+    "target": "es5",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "./frontend/ts/**/*"
+  ]
+}

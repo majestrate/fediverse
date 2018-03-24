@@ -1,0 +1,13 @@
+{
+  "name": "fediverse",
+  "version": "0.0.1",
+  "description": "fediverse frontend",
+  "main": "lib/main.js",
+  "repository": "https://github.com/majestrate/fediverse",
+  "author": "Jeff Becker <jeff@i2p.rocks>",
+  "license": "zlib",
+  "private": true,
+  "dependencies": {
+    "typescript": "^2.7.2"
+  }
+}
